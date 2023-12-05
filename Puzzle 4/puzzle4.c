@@ -4,7 +4,6 @@
 FILE *fptr;
 
 int main() {
-    //1 - recolher cada game
     fptr = fopen("puzzle4_input.txt", "r"); 
 
     char phrase[120]; 
