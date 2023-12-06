@@ -8,9 +8,9 @@ long long int calculateValue(long long int value, long long int *arraySrcs, long
     for(int i=0; i<size; i++){
         // printf("Rule: %lld %lld %lld\n",arrayDsts[i],arraySrcs[i], arrayLnts[i]);
 
-        if((arraySrcs[i] <= value) && (value <= arraySrcs[i] + arrayLnts[i])){
-            printf("SourceStart %lld <= value %lld <= sourceStart+lenght %lld\n",arraySrcs[i], value, arraySrcs[i]+arrayLnts[i]);
-            printf("New value: %lld\n",arrayDsts[i] + (value - arraySrcs[i]));
+        if((arraySrcs[i] <= value) && (value < arraySrcs[i] + arrayLnts[i])){
+            // printf("SourceStart %lld <= value %lld <= sourceStart+lenght %lld\n",arraySrcs[i], value, arraySrcs[i]+arrayLnts[i]);
+            // printf("New value: %lld\n",arrayDsts[i] + (value - arraySrcs[i]));
             return arrayDsts[i] + (value - arraySrcs[i]); //new value
         }
     }
@@ -152,24 +152,46 @@ int main() {
         long long int seedValue = strtoll(seedsValueStrWithEnd, &endValueptr, 10);
         printf("Seed value: %lld\n",seedValue);
 
-        long long int soil = calculateValue(seedValue,soilSrcs,soilDsts,soilLnts,nSoil);
-        printf("soil = %lld\n",soil);
-        long long int fertilizer = calculateValue(soil, fertilizerSrcs, fertilizerDsts, fertilizerLnts,nFertilizer);
-        printf("fertilizer = %lld\n",fertilizer);
-        long long int water = calculateValue(fertilizer, waterSrcs, waterDsts, waterLnts,nWater);
-        printf("water = %lld\n",water);
-        long long int light = calculateValue(water,lightSrcs,lightDsts,lightLnts,nLight);
-        printf("light = %lld\n",light);
-        long long int temperature = calculateValue(light,temperatureSrcs, temperatureDsts, temperatureLnts,nTemperature);
-        printf("temperature = %lld\n",temperature);
-        long long int humidity = calculateValue(temperature,humiditySrcs,humidityDsts,humidityLnts,nHumidity);
-        printf("humidity = %lld\n",humidity);
-        long long int location = calculateValue(humidity,locationSrcs,locationDsts,locationLnts,nLocation);
-        printf("location = %lld\n\n",location);
+        // 1.2. Get seed quantity
+        seedsNumberStr = strtok_r(NULL, " ", &stateSeeds); // seed qtd
 
-        if(location < lowestLocation){
-            lowestLocation = location;
-        }        
+        // Place the '\0' in the end
+        int seedQtdLStrLength = strlen(seedsNumberStr);
+        char* seedsQtdStrWithEnd = malloc(seedQtdLStrLength + 1);
+        strcpy(seedsQtdStrWithEnd, seedsNumberStr);
+        seedsQtdStrWithEnd[seedQtdLStrLength] = '\0';
+
+        char *endqtdptr;
+        long long int seedQuantity = strtoll(seedsQtdStrWithEnd, &endqtdptr, 10);
+        printf("Seed Quantity: %lld\n",seedQuantity);
+
+        printf("NEW SEED starting at: %lld with quantity: %lld\n",seedValue,seedQuantity);
+
+        for (int v = 0; v < seedQuantity; v++)
+        {
+
+            long long int soil = calculateValue(seedValue,soilSrcs,soilDsts,soilLnts,nSoil);
+            // printf("soil = %lld\n",soil);
+            long long int fertilizer = calculateValue(soil, fertilizerSrcs, fertilizerDsts, fertilizerLnts,nFertilizer);
+            // printf("fertilizer = %lld\n",fertilizer);
+            long long int water = calculateValue(fertilizer, waterSrcs, waterDsts, waterLnts,nWater);
+            // printf("water = %lld\n",water);
+            long long int light = calculateValue(water,lightSrcs,lightDsts,lightLnts,nLight);
+            // printf("light = %lld\n",light);
+            long long int temperature = calculateValue(light,temperatureSrcs, temperatureDsts, temperatureLnts,nTemperature);
+            // printf("temperature = %lld\n",temperature);
+            long long int humidity = calculateValue(temperature,humiditySrcs,humidityDsts,humidityLnts,nHumidity);
+            // printf("humidity = %lld\n",humidity);
+            long long int location = calculateValue(humidity,locationSrcs,locationDsts,locationLnts,nLocation);
+            // printf("location = %lld\n\n",location);
+
+            if(location < lowestLocation){
+                printf("Seed %lld lowest location %lld\n",seedValue, location);
+                lowestLocation = location;
+            }     
+            
+            seedValue++;
+        }
 
         seedsNumberStr = strtok_r(NULL, " ", &stateSeeds);
     }
@@ -180,5 +202,3 @@ int main() {
 
     return 0;
 }
-
-
