@@ -19,10 +19,9 @@ int compareHands(const void *a, const void *b) {
     if (handA->type != handB->type) {
         return handA->type - handB->type;
     }
-    
 
     // If types are equal, compare by handOrdered value
-    char order[] = "23456789TJQKA";
+    char order[] = "J23456789TQKA";
 
     for (int i = 0; i < 5; i++) {
 
@@ -62,11 +61,11 @@ int main() {
             {
                 int digit = hands[handsNumber].cards[card] - '0';
                 // printf("CARD: %c is digit, handValues[%d] +=1\n",hands[handsNumber][card],digit-2);
-                hands[handsNumber].handValues[digit-2] += 1;
+                hands[handsNumber].handValues[digit-1] += 1;
             } else if (hands[handsNumber].cards[card] == 'T'){
-                hands[handsNumber].handValues[8] += 1;
-            } else if (hands[handsNumber].cards[card] == 'J'){
                 hands[handsNumber].handValues[9] += 1;
+            } else if (hands[handsNumber].cards[card] == 'J'){
+                hands[handsNumber].handValues[0] += 1;
             } else if (hands[handsNumber].cards[card] == 'Q'){
                 hands[handsNumber].handValues[10] += 1;
             } else if (hands[handsNumber].cards[card] == 'K'){
@@ -80,13 +79,53 @@ int main() {
         // type: 0 (0K); 1 (2K); 2 (2K2K); 3 (3K); 4 (3K2K); 5 (4K); 6 (5K)
         int maxValue = 0; // 0 - 5 
         int count = 0; // 0 - 5
+        int maxIndex = 0;
 
         for (int card = 0; card < 13; card++){   //  0 - 12
-            if(hands[handsNumber].handValues[card] > maxValue){
+            if(hands[handsNumber].handValues[card] >= maxValue){
                 maxValue = hands[handsNumber].handValues[card];
+                maxIndex = card;
+                printf("max value! %d max Index! %d\n",maxValue,maxIndex);
             }
             if (hands[handsNumber].handValues[card] != 0){
                 count++;
+            }
+        }
+
+        printf("Max index: %d\n",maxIndex);
+        
+        // Attribute the J value
+        if(hands[handsNumber].handValues[0] != 0){
+            if(maxIndex != 0){
+                hands[handsNumber].handValues[maxIndex] += hands[handsNumber].handValues[0];
+                if(hands[handsNumber].handValues[maxIndex] > maxValue){
+                    maxValue = hands[handsNumber].handValues[maxIndex];
+                }
+                hands[handsNumber].handValues[0] = 0;
+                count -= 1;
+                printf("Max value %d count %d\n",maxValue,count);
+            }else{
+                if(hands[handsNumber].handValues[0] == 5){
+                    hands[handsNumber].handValues[12] += 5;
+                    hands[handsNumber].handValues[0] = 0;
+                } else {
+                    // get strongest card
+                    int strongestCard = 0;
+                    for (int f = 1; f<13; f++){
+                        if (hands[handsNumber].handValues[f] !=0 ){
+                            strongestCard = f;
+                        }
+                    } 
+
+                    // J value
+                    hands[handsNumber].handValues[strongestCard] += hands[handsNumber].handValues[0];
+                    if(hands[handsNumber].handValues[strongestCard] > maxValue){
+                        maxValue = hands[handsNumber].handValues[strongestCard];
+                    }
+                    hands[handsNumber].handValues[0] = 0;
+                    count -= 1;
+                    printf("Max value %d count %d\n",maxValue,count);
+                }
             }
         }
 
