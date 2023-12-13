@@ -146,7 +146,7 @@ int main() {
             int horizontalSteps = abs(galaxies[m].x - galaxies[n].x);
             int verticalSteps = abs(galaxies[m].y - galaxies[n].y);
 
-            // printf("From (%d, %d) to (%d, %d): %d\n",galaxies[n].x,galaxies[n].y,galaxies[m].x,galaxies[m].y,horizontalSteps + verticalSteps);
+            printf("From (%d, %d) to (%d, %d): %d\n",galaxies[n].x,galaxies[n].y,galaxies[m].x,galaxies[m].y,horizontalSteps + verticalSteps);
             sum += horizontalSteps + verticalSteps;
         }
        
